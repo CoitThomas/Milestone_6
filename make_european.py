@@ -19,40 +19,64 @@ def get_input():
 def convert_input(string, desired_host):
     """Take in a string and a desired host. If the host found in the
     string matches the desired host, then convert the found date to the
-    European format and return the new date and username.
+    European format and convert the username to all lowercase. Return
+    the new date and username.
     """
+    assert isinstance(string, str), "Initial input for convert_input needs to be a string."
+    assert isinstance(desired_host, str), "Host variable for convert_input needs to be a string."
+
     username, host = find_email_address(string)
-    if host == desired_host:
+    if host.lower() == desired_host:
         month, day, year = find_date(string)
-        euro_date = make_european(month, day, year)
-        return '%s %s' % (euro_date, username)
+        euro_date = '%s/%s/%s' % (day, month, year) # Convert the date into European format.
+        return '%s %s' % (euro_date, username.lower())
 
 def find_email_address(string):
     """Take in a string and return the username and host of the email
     address found in the string.
     """
+    assert isinstance(string, str), "The input for find_email_address needs to be a string."
+
     email_address = re.search(r'([\w.-]+)@([\w.-]+)', string)
     assert email_address, "A proper email address must be provided."
-    return (email_address.group(1), email_address.group(2))
+
+    username = email_address.group(1)
+    host = email_address.group(2)
+
+    return (username, host)
 
 def find_date(string):
     """Take in a string and return the month, day, and year of the date
     found in the string."""
+    assert isinstance(string, str), "The function find_date takes a string."
+
     date = re.search('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})', string)
     assert date, "A date in the format mm/dd/yyyy must be provided."
-    return (date.group(1), date.group(2), date.group(3))
 
-def make_european(month, day, year):
-    """Take in a month, day, and year, and return those elements in the
-    European format:
-    dd/mm/yyyy
-    """
-    return '%s/%s/%s' % (day, month, year)
+    month = int(date.group(1))
+    day = int(date.group(2))
+    year = int(date.group(3))
+
+    assert 1 <= month <= 12, "Please enter a valid month."
+
+    month31 = [1, 3, 5, 7, 8, 10, 12]
+    month30 = [4, 6, 9, 11]
+    if month in month31:
+        assert 1 <= day <= 31, "Please enter a valid day."
+    if month in month30:
+        assert 1 <= day <= 30, "Please enter a valid day."
+    if month == 2:
+        assert 1 <= day <= 28, "Please enter a valid day."
+
+    assert 1900 <= year <= 2100, "Please enter a valid year."
+
+    return (str(month), str(day), str(year))
 
 if __name__ == "__main__":
     INPUT = get_input()
+    HOST = 'aol.com'.lower() # Enter desired host here.
     while not INPUT.isspace() and INPUT:
-        VALID_OUTPUT = convert_input(INPUT, 'aol.com')
+        VALID_OUTPUT = convert_input(INPUT, HOST)
         if VALID_OUTPUT:
             print VALID_OUTPUT
         INPUT = get_input()
