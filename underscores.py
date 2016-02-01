@@ -1,9 +1,7 @@
 """Take input from a user and print out the given input with the white
 space between words replaced by an underscore."""
 
-def get_input():
-    """Propmt the user for input and store it as a string."""
-    return raw_input("Enter whatever your heart desires:")
+from get_input import get_input
 
 def replace_space(string):
     """Replace all the whitespace found in a given string with an
