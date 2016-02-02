@@ -13,11 +13,9 @@ def convert_input(string, desired_host):
     European format and convert the username to all lowercase. Return
     the new date and username.
     """
-    assert isinstance(string, str), "Initial input for convert_input needs to be a string."
-    assert isinstance(desired_host, str), "Host variable for convert_input needs to be a string."
-
     username, host = find_email_address(string)
-    if host.lower() == desired_host:
+    assert username and host, "A valid email address was not present in the given string."
+    if host.lower() == desired_host.lower():
         month, day, year = find_date(string)
         euro_date = '%s/%s/%s' % (day, month, year) # Convert the date into European format.
         return '%s %s' % (euro_date, username.lower())
@@ -28,11 +26,15 @@ def find_email_address(string):
     """
     assert isinstance(string, str), "The input for find_email_address needs to be a string."
 
-    email_address = re.search(r'([\w.-]+)@([\w.-]+)', string)
+    email_address = re.search( # search for username@host
+        r"(?P<username>[\w.-]+)" # the username
+        r"@(?P<host>[\w.-]+)", # the host
+        string
+    )
     assert email_address, "A proper email address must be provided."
 
-    username = email_address.group(1)
-    host = email_address.group(2)
+    username = email_address.group('username')
+    host = email_address.group('host')
 
     return (username, host)
 
@@ -41,7 +43,12 @@ def find_date(string):
     found in the string."""
     assert isinstance(string, str), "The function find_date takes a string."
 
-    date = re.search('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})', string)
+    date = re.search( # search for mm/dd/yyyy
+        "([0-9]{1,2})" # the month
+        "/([0-9]{1,2})" # the day
+        "/([0-9]{4})", # the year
+        string
+    )
     assert date, "A date in the format mm/dd/yyyy must be provided."
 
     month = int(date.group(1))
@@ -65,7 +72,7 @@ def find_date(string):
 
 if __name__ == "__main__":
     INPUT = get_input()
-    HOST = 'aol.com'.lower() # Enter desired host here.
+    HOST = 'aol.com' # Enter desired host here.
     while not INPUT.isspace() and INPUT:
         VALID_OUTPUT = convert_input(INPUT, HOST)
         if VALID_OUTPUT:
