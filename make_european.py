@@ -5,16 +5,7 @@ the date to European format so that the following format is produced:
 dd/mm/yyyy username
 """
 import re
-
-def get_input():
-    """Prompts the user for input in the format:
-    mm/dd/yyyy:username@host
-    Receive the input as raw_input.
-    """
-    try:
-        return raw_input()
-    except EOFError:
-        return ' '
+from get_input import get_input
 
 def convert_input(string, desired_host):
     """Take in a string and a desired host. If the host found in the

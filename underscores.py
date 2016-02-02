@@ -7,8 +7,7 @@ def replace_space(string):
     """Replace all the whitespace found in a given string with an
     underscore and return it.
     """
-    words_list = string.split()
-    return '_'.join(words_list)
+    return '_'.join(string.split())
 
 if __name__ == "__main__":
     INPUT = get_input()
